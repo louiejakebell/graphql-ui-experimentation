@@ -10,7 +10,7 @@ const USERS = [
     name: "Peter Falkirk",
     role: [ADMIN],
     createdAt: "Fri Jan 18 2019 13:10:20 GMT+0000 (Greenwich Mean Time)",
-    permsissions: {
+    permissions: {
       createCustomer: true
     }
   },
@@ -18,7 +18,7 @@ const USERS = [
     name: "Mary Gardy",
     role: [ADVISOR, BROKER],
     createdAt: "Fri Jan 18 2018 09:10:20 GMT+0000 (Greenwich Mean Time)",
-    permsissions: {
+    permissions: {
       createCustomer: true
     }
   },
@@ -26,37 +26,37 @@ const USERS = [
     name: "Tomas Hilter",
     role: [BROKER],
     createdAt: "Fri Jan 18 2018 09:10:20 GMT+0000 (Greenwich Mean Time)",
-    permsissions: {}
+    permissions: {}
   },
   {
     name: "Superhands Fredrick",
     role: [ADVISOR],
     createdAt: "",
-    permsissions: {}
+    permissions: {}
   },
   {
     name: "Peter Stifler",
     role: [BROKER],
     createdAt: "Fri Jan 18 2018 09:10:20 GMT+0000 (Greenwich Mean Time)",
-    permsissions: {}
+    permissions: {}
   },
   {
     name: "Anne Welder",
     role: [BROKER],
     createdAt: "Fri Jan 18 2018 09:10:20 GMT+0000 (Greenwich Mean Time)",
-    permsissions: {}
+    permissions: {}
   },
   {
     name: "",
     role: [BROKER],
     createdAt: "Fri Jan 18 2018 09:10:20 GMT+0000 (Greenwich Mean Time)",
-    permsissions: {}
+    permissions: {}
   },
   {
     name: "Mourinho",
     role: [BROKER],
     createdAt: "Fri Jan 18 2018 09:10:20 GMT+0000 (Greenwich Mean Time)",
-    permsissions: {
+    permissions: {
       createCustomer: true
     }
   },
@@ -64,7 +64,7 @@ const USERS = [
     name: "Peteris Best",
     role: [BROKER],
     createdAt: "Fri Jan 18 2018 09:10:20 GMT+0000 (Greenwich Mean Time)",
-    permsissions: {}
+    permissions: {}
   }
 ];
 
@@ -85,6 +85,11 @@ const typeDefs = `
     name: String!
     role: [Role]!
     createdAt: String
+    permissions: Permissions
+  }
+
+  type Permissions {
+    createCustomer: Boolean
   }
   
   enum Role {

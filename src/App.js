@@ -1,38 +1,76 @@
-import React, { Component } from "react";
-import { ApolloProvider } from "react-apollo";
+import React, { useState } from "react";
+import { ApolloProvider, Query } from "react-apollo";
+import gql from "graphql-tag";
+// import styled from 'styled-components';
 
 import logo from "./acre-logo.svg";
 import "./App.css";
 
-class App extends Component {
-  render() {
-    return (
-      <div className="app">
-        <header className="app-header">
-          <img src={logo} className="app-logo" alt="logo" />
+const App = ({ client }) => {
+  const [role, setRole] = useState("ADMIN");
 
-          <h1>Welcome to acre</h1>
+  const handleChange = (event) => {
+    event.preventDefault();
 
-          <h2>Users</h2>
-
-          <select>
-            <option value="ADMIN">Admin</option>
-            <option value="ADMIN">Broker</option>
-            <option value="ADVISOR">Advisor</option>
-          </select>
-
-          <ul>
-            <li>
-              John <strong>Admin</strong>
-            </li>
-            <li>
-              Mary <strong>Admin</strong>
-            </li>
-          </ul>
-        </header>
-      </div>
-    );
+    setRole(event.target.value);
   }
+
+  return (
+    <ApolloProvider client={client}>
+      <Query
+        query={gql`
+        {
+          users(role: "${role}") {
+            name
+            permissions {
+              createCustomer
+            }
+          }
+        }
+      `}
+      >{({ loading, error, data }) => {
+        if (loading) return "loading...";
+        if (error) return `error! ${error.message}`;
+
+        const filteredData = data.users.filter(entry => entry.name !== '');
+
+        return (
+          <div className="app">
+            <header className="app-header">
+              <img src={logo} className="app-logo" alt="logo" />
+
+              <h1>Welcome to acre</h1>
+
+              <h2>Users</h2>
+
+              <select value={role} onChange={handleChange}>
+                <option value="ADMIN">Admin</option>
+                <option value="BROKER">Broker</option>
+                <option value="ADVISOR">Advisor</option>
+              </select>
+
+              <ul>
+                {filteredData.map((entry, index) => {
+                  const canCreateCustomer = entry.permissions.createCustomer;
+
+                  return (
+                    <li key={index} >
+                      {entry.name} {canCreateCustomer && <button>create customer</button>}
+                    </li>
+                  )
+                })}
+              </ul>
+            </header>
+          </div>
+        );
+      }}
+      </Query>
+    </ApolloProvider>
+  );
 }
 
 export default App;
+
+
+
+
