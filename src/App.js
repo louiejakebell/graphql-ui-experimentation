@@ -1,13 +1,33 @@
-import React, { useState } from "react";
-import { ApolloProvider, Query } from "react-apollo";
-import gql from "graphql-tag";
-// import styled from 'styled-components';
+import React, { useState } from 'react';
+import { ApolloProvider, Query } from 'react-apollo';
+import gql from 'graphql-tag';
+import styled from 'styled-components';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 
-import logo from "./acre-logo.svg";
-import "./App.css";
+import UserList from './UserList';
+import Spinner from './Spinner';
+import logo from './acre-logo.svg';
+
+const Wrapper = styled.div`
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Title = styled.h1`
+  font-family: "Playfair Display", serif;
+`;
+
+const Header = styled.h2`
+  font-family: "Playfair Display", serif;
+`;
 
 const App = ({ client }) => {
-  const [role, setRole] = useState("ADMIN");
+  const [role, setRole] = useState('ADMIN');
 
   const handleChange = (event) => {
     event.preventDefault();
@@ -29,48 +49,32 @@ const App = ({ client }) => {
         }
       `}
       >{({ loading, error, data }) => {
-        if (loading) return "loading...";
+        if (loading) return <Spinner />;
         if (error) return `error! ${error.message}`;
 
         const filteredData = data.users.filter(entry => entry.name !== '');
 
         return (
-          <div className="app">
-            <header className="app-header">
-              <img src={logo} className="app-logo" alt="logo" />
+          <Wrapper>
+            <img src={logo} alt="logo" />
 
-              <h1>Welcome to acre</h1>
+            <Title>Welcome to acre</Title>
 
-              <h2>Users</h2>
+            <Header>Users</Header>
 
-              <select value={role} onChange={handleChange}>
-                <option value="ADMIN">Admin</option>
-                <option value="BROKER">Broker</option>
-                <option value="ADVISOR">Advisor</option>
-              </select>
+            <Select value={role} onChange={handleChange}>
+              <MenuItem value='ADMIN'>Admin</MenuItem>
+              <MenuItem value='BROKER'>Broker</MenuItem>
+              <MenuItem value='ADVISOR'>Advisor</MenuItem>
+            </Select>
 
-              <ul>
-                {filteredData.map((entry, index) => {
-                  const canCreateCustomer = entry.permissions.createCustomer;
-
-                  return (
-                    <li key={index} >
-                      {entry.name} {canCreateCustomer && <button>create customer</button>}
-                    </li>
-                  )
-                })}
-              </ul>
-            </header>
-          </div>
+            <UserList data={data} />
+          </Wrapper>
         );
       }}
       </Query>
     </ApolloProvider>
   );
-}
+};
 
 export default App;
-
-
-
-
